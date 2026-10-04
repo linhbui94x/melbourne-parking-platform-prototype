@@ -31,7 +31,7 @@ export function ParkingMap({ bays, selected, onSelect }: { bays: Bay[]; selected
     <MapContainer ref={mapRef} center={[-37.8136, 144.9631]} zoom={15} zoomControl={false} className="h-full w-full">
       <TileLayer
   attribution='&copy; OpenStreetMap contributors &copy; CARTO'
-  url="https://basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}{r}.png?key=cb1_48rn_2_ff83a6c94f19b36d1251e54c"
+  url={`https://basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}{r}.png?key=${process.env.NEXT_PUBLIC_CARTO_API_KEY}`}
 />
       <Recenter selected={selected} />
       {bays.map((bay) => (
