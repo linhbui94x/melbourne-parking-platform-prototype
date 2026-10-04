@@ -29,7 +29,10 @@ export function ParkingMap({ bays, selected, onSelect }: { bays: Bay[]; selected
   const mapRef = useRef<L.Map | null>(null)
   return (
     <MapContainer ref={mapRef} center={[-37.8136, 144.9631]} zoom={15} zoomControl={false} className="h-full w-full">
-      <TileLayer attribution='&copy; OpenStreetMap contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+      <TileLayer
+  attribution='&copy; OpenStreetMap contributors &copy; CARTO'
+  url="https://basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}{r}.png?key=cb1_48rn_2_ff83a6c94f19b36d1251e54c"
+/>
       <Recenter selected={selected} />
       {bays.map((bay) => (
         <CircleMarker
