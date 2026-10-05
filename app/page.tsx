@@ -30,7 +30,6 @@ export default function Page() {
   const [started, setStarted] = useState(false)
   const [query, setQuery] = useState('')
   const [vacantOnly, setVacantOnly] = useState(false)
-  const [period, setPeriod] = useState('All time limits')
   const [selected, setSelected] = useState<Bay | null>(null)
 
   // Live bays from /api/parking
@@ -81,11 +80,9 @@ export default function Page() {
           (!query ||
             bay.street
               .toLowerCase()
-              .includes(query.toLowerCase())) &&
-          (period === 'All time limits' ||
-            bay.restriction.startsWith(period))
+              .includes(query.toLowerCase()))
       ),
-    [bays, query, vacantOnly, period]
+    [bays, query, vacantOnly]
   )
 
   if (!started) {
@@ -176,6 +173,7 @@ export default function Page() {
         <div className="relative order-2 min-h-0 flex-1">
           <ParkingMap
             bays={filtered}
+            query={query}
             selected={selected}
             onSelect={setSelected}
           />
@@ -222,33 +220,9 @@ export default function Page() {
                   </span>
                 </div>
 
-                <div className="mt-2.5 flex flex-wrap gap-1.5">
-                  {[
-                    'All time limits',
-                    '1P',
-                    '2P',
-                    '3P',
-                    '4P',
-                  ].map((option) => (
-                    <button
-                      key={option}
-                      onClick={() =>
-                        setPeriod(option)
-                      }
-                      className={`rounded-full px-2.5 py-1.5 text-[11px] font-semibold transition md:px-3 md:py-2 md:text-xs ${
-                        period === option
-                          ? 'bg-[#17342d] text-white'
-                          : 'bg-[#edf3f0] text-[#55736a]'
-                      }`}
-                    >
-                      {option}
-                    </button>
-                  ))}
-                </div>
-
                 <p className="mt-2.5 flex items-center gap-2 text-xs text-[#55736a]">
                   <MapPin className="size-4" />
-                  Tap a marker to see restrictions
+                  Tap a marker to see parking details
                 </p>
               </div>
             )}
@@ -300,18 +274,6 @@ function Details({
         >
           <X className="size-5" />
         </button>
-      </div>
-
-      <div className="my-3 rounded-xl bg-[#edf3f0] p-3">
-        <p className="text-xs font-bold tracking-wide text-[#126b50] md:text-sm">
-          {bay.restriction ||
-            'Restriction data unavailable'}
-        </p>
-
-        <p className="mt-1.5 text-xs leading-5 text-[#35564c] md:text-sm md:leading-6">
-          {bay.detail ||
-            'Restriction details will be added after the live bay connection is confirmed.'}
-        </p>
       </div>
 
       <p className="flex items-center gap-2 text-[11px] text-[#789087] md:text-xs">

@@ -25,15 +25,35 @@ function Recenter({ selected }: { selected: Bay | null }) {
   return null
 }
 
-export function ParkingMap({ bays, selected, onSelect }: { bays: Bay[]; selected: Bay | null; onSelect: (bay: Bay) => void }) {
+function SearchViewport({ bays, query }: { bays: Bay[]; query: string }) {
+  const map = useMap()
+
+  useEffect(() => {
+    if (!query) {
+      map.setView([-37.8136, 144.9631], 15)
+    } else if (bays.length === 1) {
+      map.flyTo([bays[0].lat, bays[0].lng], 17, { duration: 0.6 })
+    } else if (bays.length > 1) {
+      const bounds = L.latLngBounds(
+        bays.map((bay) => L.latLng(bay.lat, bay.lng))
+      )
+      map.fitBounds(bounds, { padding: [32, 32], maxZoom: 17 })
+    }
+  }, [bays, map, query])
+
+  return null
+}
+
+export function ParkingMap({ bays, query, selected, onSelect }: { bays: Bay[]; query: string; selected: Bay | null; onSelect: (bay: Bay) => void }) {
   const mapRef = useRef<L.Map | null>(null)
   return (
     <MapContainer ref={mapRef} center={[-37.8136, 144.9631]} zoom={15} zoomControl={false} className="h-full w-full">
       <TileLayer
   attribution='&copy; OpenStreetMap contributors &copy; CARTO'
-  url={`https://basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}{r}.png?key=${process.env.NEXT_PUBLIC_CARTO_API_KEY}`}
+  url={`https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=${process.env.NEXT_PUBLIC_CARTO_API_KEY}`}
 />
       <Recenter selected={selected} />
+  <SearchViewport bays={bays} query={query} />
       {bays.map((bay) => (
         <CircleMarker
           key={bay.id}
